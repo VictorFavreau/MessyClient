@@ -8,12 +8,20 @@ class UserForm extends React.Component {
 
   constructor(props) {
      super(props);
-     this.state = { user:"", token:""};
+
+    if (sessionStorage.getItem('token')!=undefined) {
+      this.state = {user: sessionStorage.getItem('user'), token:sessionStorage.getItem('token')};
+    }else{
+      this.state = {user: {}, token:""};
+    }
+
      this.updateUser = this.updateUser.bind(this);
      this.onClickInscription = this.onClickInscription.bind(this);
      this.onClickConnexion = this.onClickConnexion.bind(this);
      this.backHome = this.backHome.bind(this);
    }
+
+
 
   onClickInscription(){
     this.setState({enableJoin: true});
@@ -53,9 +61,11 @@ class UserForm extends React.Component {
         this.backHome();
       }
       else {
-        this.setState({token:response.token});
+
+	      sessionStorage.setItem('user', response.user);
+        sessionStorage.setItem('token', response.token);
+        this.setState({user: response.user, token:response.token});
       }
-      //console.log(JSON.stringify(this.state.token));
 
     });
 
@@ -64,7 +74,8 @@ class UserForm extends React.Component {
 
   backHome()
   {
-    this.setState({enableConnect: false, enableJoin: false});
+    this.setState({enableConnect: false, enableJoin: false, user: {}, token:""});
+    sessionStorage.clear();
   }
 
   render() {
@@ -72,7 +83,8 @@ class UserForm extends React.Component {
     var user = this.state.user;
 
     if(this.state.token){
-      return(<Home token={this.state.token} />);
+
+      return(<Home onClickRetour={this.backHome}/>);
     }
 
     if(this.state.enableJoin) {
@@ -80,24 +92,34 @@ class UserForm extends React.Component {
     }
 
     return (
-      <form onSubmit={this.eventSubmit}>
-      this.state = { JSON.stringify(user) } <br/>
-        <label>Name : </label>
-        <input
-           name="name"
-           value={user.name}
-           onInput={ this.updateUser }
-           /><br/>
-        <label>Password : </label>
-        <input
-          name="password"
-          value={user.password}
-          onInput={this.updateUser}
-        /><br/>
 
-        <button onClick={this.onClickConnexion}>Connexion</button>
-        <button onClick={this.onClickInscription}>Inscription</button>
-      </form>
+      <div class='wrap'>
+        MESSY CLIENT
+        <form onSubmit={this.eventSubmit}>
+
+          <input
+            type='text'
+            id='username'
+            placeholder='Utilisateur'
+            name="name"
+            value={user.name}
+            onInput={ this.updateUser }
+            />
+          <input
+            type='password'
+            id='password'
+            placeholder='Mot de passe'
+            name="password"
+            value={user.password}
+            onInput={this.updateUser}
+            />
+
+        </form>
+
+        <button class='forgot' onClick={this.onClickConnexion}>Connexion</button>
+        <button class='login' onClick={this.onClickInscription}>Inscription</button>
+      </div>
+
      );
 
   }

@@ -1,31 +1,79 @@
 var React = require("react");
 var ReactDOM = require("react-dom");
 
+var UserForm = require("./UserForm");
+
 
 class Home extends React.Component {
   constructor(props) {
      super(props);
-     this.state = {token: this.props.token }
+
+     if (sessionStorage.getItem('token')!=undefined) {
+       this.state = {user: sessionStorage.getItem('user'), token:sessionStorage.getItem('token')};
+     }else{
+       this.state = {user: {}, token:""};
+     }
+
      this.updateMessage = this.updateMessage.bind(this);
      this.nouveauMessage = this.nouveauMessage.bind(this);
      this.getlistMessages = this.getlistMessages.bind(this);
-
+     this.renderMessage = this.renderMessage.bind(this);
+     this.deleteMessage = this.deleteMessage.bind(this);
    }
 
    componentDidMount()
    {
+     const ws = new WebSocket("wss://messy.now.sh");
+
+     ws.onmessage = function (message) {
+      var data = JSON.parse(message.data);
+      switch (data.event) {
+        case "message.created":
+          var msg = this.state.listMessages;
+          msg.push(data.message);
+          this.setState({ listMessages: msg });
+          break;
+
+        case "message.deleted":
+          function match(element) {
+            return element.id !== data.id;
+          }
+          var msg = this.state.listMessages.filter(match);
+          this.setState({ listMessages: msg });
+          break;
+      }
+    }.bind(this)
+
      this.getlistMessages();
    }
 
    renderMessage(message){
 
-     return(
-       <div>
-        <h3>{message.user.name}</h3>
-        <img src={message.user.image} width="200px"/>
-        <p>{message.message}</p>
-       </div>
-     );
+     if(message.user.id == this.state.user.id){
+       return(
+
+         <tr>
+           <td>{message.user.name}</td>
+           <td><img src={message.user.image} width="200px"/></td>
+           <td>{message.message}</td>
+           <td><a href="#" onClick={this.deleteMessage.bind(this,message.id)}>SUPPRIMER</a></td>
+         </tr>
+
+
+       );
+     }
+     else{
+       return(
+
+         <tr>
+           <td>{message.user.name}</td>
+           <td><img src={message.user.image} width="200px"/></td>
+           <td>{message.message}</td>
+         </tr>
+
+
+       );
+     }
    }
 
    getlistMessages()
@@ -68,17 +116,23 @@ class Home extends React.Component {
      .then(response => response.json())
      .then(response => {
 
-       this.setState({
-         listMessages : this.state.listMessages.concat(response)
-       });
-
-
      });
-
-
    }
 
+   deleteMessage(idMessage)
+   {
+     var token = this.state.token;
 
+     var url = "https://messy.now.sh/u/timeline/" + idMessage;
+
+     fetch(url, {
+       method: 'DELETE',
+       headers: {
+         "Authorization": "Bearer:" + token,
+       },
+
+     });
+   }
 
    render() {
 
@@ -101,8 +155,10 @@ class Home extends React.Component {
 
        var listMessagesPrepared = this.state.listMessages.map(this.renderMessage);
 
+
        return(
          <div>
+         <button onClick={this.props.onClickRetour}>Retour</button>
           <div>
             <h1>Message:</h1>
             <label>Message : </label>
@@ -116,7 +172,9 @@ class Home extends React.Component {
           </div>
           <div>
             <h1>Timeline:</h1>
-            {listMessagesPrepared}
+            <table>
+              {listMessagesPrepared}
+            </table>
           </div>
         </div>
        );

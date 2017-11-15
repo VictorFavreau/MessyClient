@@ -6,7 +6,12 @@ class UserJoin extends React.Component {
   constructor(props) {
      super(props);
 
-     this.state = { user: "" };
+     if (sessionStorage.getItem('token')!=undefined) {
+       this.state = {user: sessionStorage.getItem('user'), token:sessionStorage.getItem('token')};
+     }else{
+       this.state = {user: {}, token:""};
+     }
+
      this.updateUser = this.updateUser.bind(this);
      this.eventSubmit = this.eventSubmit.bind(this);
    }
@@ -47,7 +52,9 @@ class UserJoin extends React.Component {
          this.props.onClickRetour;
        }
        else {
-         this.setState({token:response.token});
+         sessionStorage.setItem('user', response.user);
+         sessionStorage.setItem('token', response.token);
+         this.setState({user: response.user, token:response.token});
        }
      });
 
@@ -56,34 +63,49 @@ class UserJoin extends React.Component {
    render() {
 
      if(this.state.token){
-       return(<Home token={this.state.token} />);
+       return(<Home onClickRetour={this.props.onClickRetour}/>);
      }
 
      var user = this.state.user;
      return (
-       <form onSubmit={this.eventSubmit}>
-       this.state = { JSON.stringify(user) } <br/>
-         <label>Name : </label>
-         <input
-            name="name"
-            value={user.name}
-            onInput={ this.updateUser }
-            /><br/>
-         <label>Password : </label>
-         <input
-           name="password"
-           value={user.password}
-           onInput={this.updateUser}
-         /><br/>
-         <label>Image URL : </label>
-         <input
-           name="image"
-           value={user.image}
-           onInput={this.updateUser}
-         /><br/>
-         <input type="submit" value="Inscription" />
-        <button onClick={this.props.onClickRetour}>Retour</button>
-       </form>
+
+       <div class='wrap'>
+         MESSY CLIENT
+         <form onSubmit={this.eventSubmit}>
+
+           <input
+             type='text'
+             id='username'
+             placeholder='Utilisateur'
+             name="name"
+             value={user.name}
+             onInput={ this.updateUser }
+             />
+           <input
+             type='password'
+             id='password'
+             placeholder='Mot de passe'
+             name="password"
+             value={user.password}
+             onInput={this.updateUser}
+             />
+          <input
+             type='text'
+             id='pict'
+             placeholder='URL Image'
+             name="image"
+             value={user.image}
+             onInput={this.updateUser}
+             />
+
+         </form>
+
+         <button class='forgot' onClick={this.eventSubmit}>Inscription</button>
+         <button class='login' onClick={this.props.onClickRetour}>Retour</button>
+
+       </div>
+
+
      );
    }
 }
