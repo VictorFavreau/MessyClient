@@ -21571,9 +21571,9 @@
 	    }
 
 	    return React.createElement(
-	      "h1",
-	      null,
-	      "EN ATTENTE DES listMessages"
+	      "div",
+	      { "class": "loader_container" },
+	      React.createElement("div", { "class": "loader" })
 	    );
 	  }
 	}

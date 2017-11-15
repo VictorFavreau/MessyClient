@@ -181,7 +181,9 @@ class Home extends React.Component {
      }
 
      return(
-     <h1>EN ATTENTE DES listMessages</h1>
+       <div class="loader_container">
+         <div class="loader"></div>
+       </div>
      );
    }
 }
