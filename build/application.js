@@ -21122,112 +21122,112 @@
 
 	class UserForm extends React.Component {
 
-	  constructor(props) {
-	    super(props);
+	    constructor(props) {
+	        super(props);
 
-	    if (sessionStorage.getItem('token') != undefined) {
-	      this.state = { user: sessionStorage.getItem('user'), token: sessionStorage.getItem('token') };
-	    } else {
-	      this.state = { user: {}, token: "" };
+	        if (sessionStorage.getItem('token') != undefined) {
+	            this.state = { user: sessionStorage.getItem('user'), token: sessionStorage.getItem('token') };
+	        } else {
+	            this.state = { user: {}, token: "" };
+	        }
+
+	        this.updateUser = this.updateUser.bind(this);
+	        this.onClickInscription = this.onClickInscription.bind(this);
+	        this.onClickConnexion = this.onClickConnexion.bind(this);
+	        this.backHome = this.backHome.bind(this);
 	    }
 
-	    this.updateUser = this.updateUser.bind(this);
-	    this.onClickInscription = this.onClickInscription.bind(this);
-	    this.onClickConnexion = this.onClickConnexion.bind(this);
-	    this.backHome = this.backHome.bind(this);
-	  }
-
-	  onClickInscription() {
-	    this.setState({ enableJoin: true });
-	  }
-
-	  updateUser(event) {
-	    var updatedU = Object.assign({}, this.state.user, { [event.target.name]: event.target.value });
-	    this.setState({
-	      user: updatedU
-	    });
-	  }
-
-	  onClickConnexion(event) {
-	    var user = this.state.user;
-
-	    //NE RAFRAICHIS PLUS LA PAGE
-	    event.preventDefault();
-
-	    fetch('https://messy.now.sh/authenticate', {
-	      method: 'POST',
-	      headers: {
-	        'Accept': 'application/json',
-	        'Content-Type': 'application/json'
-	      },
-	      body: JSON.stringify(user)
-	    }).then(response => response.json()).then(response => {
-
-	      if (response.error) {
-	        this.backHome();
-	      } else {
-
-	        sessionStorage.setItem('user', response.user);
-	        sessionStorage.setItem('token', response.token);
-	        this.setState({ user: response.user, token: response.token });
-	      }
-	    });
-	  }
-
-	  backHome() {
-	    this.setState({ enableConnect: false, enableJoin: false, user: {}, token: "" });
-	    sessionStorage.clear();
-	  }
-
-	  render() {
-
-	    var user = this.state.user;
-
-	    if (this.state.token) {
-
-	      return React.createElement(Home, { onClickRetour: this.backHome });
+	    onClickInscription() {
+	        this.setState({ enableJoin: true });
 	    }
 
-	    if (this.state.enableJoin) {
-	      return React.createElement(UserJoin, { onClickRetour: this.backHome });
+	    updateUser(event) {
+	        var updatedU = Object.assign({}, this.state.user, { [event.target.name]: event.target.value });
+	        this.setState({
+	            user: updatedU
+	        });
 	    }
 
-	    return React.createElement(
-	      "div",
-	      { "class": "wrap" },
-	      "MESSY CLIENT",
-	      React.createElement(
-	        "form",
-	        { onSubmit: this.eventSubmit },
-	        React.createElement("input", {
-	          type: "text",
-	          id: "username",
-	          placeholder: "Utilisateur",
-	          name: "name",
-	          value: user.name,
-	          onInput: this.updateUser
-	        }),
-	        React.createElement("input", {
-	          type: "password",
-	          id: "password",
-	          placeholder: "Mot de passe",
-	          name: "password",
-	          value: user.password,
-	          onInput: this.updateUser
-	        })
-	      ),
-	      React.createElement(
-	        "button",
-	        { "class": "forgot", onClick: this.onClickConnexion },
-	        "Connexion"
-	      ),
-	      React.createElement(
-	        "button",
-	        { "class": "login", onClick: this.onClickInscription },
-	        "Inscription"
-	      )
-	    );
-	  }
+	    onClickConnexion(event) {
+	        var user = this.state.user;
+
+	        //NE RAFRAICHIS PLUS LA PAGE
+	        event.preventDefault();
+
+	        fetch('https://messy.now.sh/authenticate', {
+	            method: 'POST',
+	            headers: {
+	                'Accept': 'application/json',
+	                'Content-Type': 'application/json'
+	            },
+	            body: JSON.stringify(user)
+	        }).then(response => response.json()).then(response => {
+
+	            if (response.error) {
+	                this.backHome();
+	            } else {
+
+	                sessionStorage.setItem('user', response.user);
+	                sessionStorage.setItem('token', response.token);
+	                this.setState({ user: response.user, token: response.token });
+	            }
+	        });
+	    }
+
+	    backHome() {
+	        this.setState({ enableConnect: false, enableJoin: false, user: {}, token: "" });
+	        sessionStorage.clear();
+	    }
+
+	    render() {
+
+	        var user = this.state.user;
+
+	        if (this.state.token) {
+
+	            return React.createElement(Home, { onClickRetour: this.backHome });
+	        }
+
+	        if (this.state.enableJoin) {
+	            return React.createElement(UserJoin, { onClickRetour: this.backHome });
+	        }
+
+	        return React.createElement(
+	            "div",
+	            { "class": "wrap" },
+	            "MESSY CLIENT",
+	            React.createElement(
+	                "form",
+	                { onSubmit: this.eventSubmit },
+	                React.createElement("input", {
+	                    type: "text",
+	                    id: "username",
+	                    placeholder: "Utilisateur",
+	                    name: "name",
+	                    value: user.name,
+	                    onInput: this.updateUser
+	                }),
+	                React.createElement("input", {
+	                    type: "password",
+	                    id: "password",
+	                    placeholder: "Mot de passe",
+	                    name: "password",
+	                    value: user.password,
+	                    onInput: this.updateUser
+	                })
+	            ),
+	            React.createElement(
+	                "button",
+	                { "class": "forgot", onClick: this.onClickConnexion },
+	                "Connexion"
+	            ),
+	            React.createElement(
+	                "button",
+	                { "class": "login", onClick: this.onClickInscription },
+	                "Inscription"
+	            )
+	        );
+	    }
 
 	}
 
@@ -21242,106 +21242,106 @@
 	var Home = __webpack_require__(34);
 
 	class UserJoin extends React.Component {
-	  constructor(props) {
-	    super(props);
+	    constructor(props) {
+	        super(props);
 
-	    if (sessionStorage.getItem('token') != undefined) {
-	      this.state = { user: sessionStorage.getItem('user'), token: sessionStorage.getItem('token') };
-	    } else {
-	      this.state = { user: {}, token: "" };
+	        if (sessionStorage.getItem('token') != undefined) {
+	            this.state = { user: sessionStorage.getItem('user'), token: sessionStorage.getItem('token') };
+	        } else {
+	            this.state = { user: {}, token: "" };
+	        }
+
+	        this.updateUser = this.updateUser.bind(this);
+	        this.eventSubmit = this.eventSubmit.bind(this);
 	    }
 
-	    this.updateUser = this.updateUser.bind(this);
-	    this.eventSubmit = this.eventSubmit.bind(this);
-	  }
-
-	  getInitialState() {
-	    return { user: { name: "", password: "", image: "" } };
-	  }
-
-	  updateUser(event) {
-	    var updatedU = Object.assign({}, this.state.user, { [event.target.name]: event.target.value });
-	    this.setState({
-	      user: updatedU
-	    });
-	  }
-
-	  eventSubmit(event) {
-
-	    var user = this.state.user;
-
-	    //NE RAFRAICHIS PLUS LA PAGE
-	    event.preventDefault();
-
-	    fetch('https://messy.now.sh/join', {
-	      method: 'POST',
-	      headers: {
-	        'Accept': 'application/json',
-	        'Content-Type': 'application/json'
-	      },
-	      body: JSON.stringify(user)
-	    }).then(response => response.json()).then(response => {
-	      if (response.error) {
-	        this.props.onClickRetour;
-	      } else {
-	        sessionStorage.setItem('user', response.user);
-	        sessionStorage.setItem('token', response.token);
-	        this.setState({ user: response.user, token: response.token });
-	      }
-	    });
-	  }
-
-	  render() {
-
-	    if (this.state.token) {
-	      return React.createElement(Home, { onClickRetour: this.props.onClickRetour });
+	    getInitialState() {
+	        return { user: { name: "", password: "", image: "" } };
 	    }
 
-	    var user = this.state.user;
-	    return React.createElement(
-	      "div",
-	      { "class": "wrap" },
-	      "MESSY CLIENT",
-	      React.createElement(
-	        "form",
-	        { onSubmit: this.eventSubmit },
-	        React.createElement("input", {
-	          type: "text",
-	          id: "username",
-	          placeholder: "Utilisateur",
-	          name: "name",
-	          value: user.name,
-	          onInput: this.updateUser
-	        }),
-	        React.createElement("input", {
-	          type: "password",
-	          id: "password",
-	          placeholder: "Mot de passe",
-	          name: "password",
-	          value: user.password,
-	          onInput: this.updateUser
-	        }),
-	        React.createElement("input", {
-	          type: "text",
-	          id: "pict",
-	          placeholder: "URL Image",
-	          name: "image",
-	          value: user.image,
-	          onInput: this.updateUser
-	        })
-	      ),
-	      React.createElement(
-	        "button",
-	        { "class": "forgot", onClick: this.eventSubmit },
-	        "Inscription"
-	      ),
-	      React.createElement(
-	        "button",
-	        { "class": "login", onClick: this.props.onClickRetour },
-	        "Retour"
-	      )
-	    );
-	  }
+	    updateUser(event) {
+	        var updatedU = Object.assign({}, this.state.user, { [event.target.name]: event.target.value });
+	        this.setState({
+	            user: updatedU
+	        });
+	    }
+
+	    eventSubmit(event) {
+
+	        var user = this.state.user;
+
+	        //NE RAFRAICHIS PLUS LA PAGE
+	        event.preventDefault();
+
+	        fetch('https://messy.now.sh/join', {
+	            method: 'POST',
+	            headers: {
+	                'Accept': 'application/json',
+	                'Content-Type': 'application/json'
+	            },
+	            body: JSON.stringify(user)
+	        }).then(response => response.json()).then(response => {
+	            if (response.error) {
+	                this.props.onClickRetour;
+	            } else {
+	                sessionStorage.setItem('user', response.user);
+	                sessionStorage.setItem('token', response.token);
+	                this.setState({ user: response.user, token: response.token });
+	            }
+	        });
+	    }
+
+	    render() {
+
+	        if (this.state.token) {
+	            return React.createElement(Home, { onClickRetour: this.props.onClickRetour });
+	        }
+
+	        var user = this.state.user;
+	        return React.createElement(
+	            "div",
+	            { "class": "wrap" },
+	            "MESSY CLIENT",
+	            React.createElement(
+	                "form",
+	                { onSubmit: this.eventSubmit },
+	                React.createElement("input", {
+	                    type: "text",
+	                    id: "username",
+	                    placeholder: "Utilisateur",
+	                    name: "name",
+	                    value: user.name,
+	                    onInput: this.updateUser
+	                }),
+	                React.createElement("input", {
+	                    type: "password",
+	                    id: "password",
+	                    placeholder: "Mot de passe",
+	                    name: "password",
+	                    value: user.password,
+	                    onInput: this.updateUser
+	                }),
+	                React.createElement("input", {
+	                    type: "text",
+	                    id: "pict",
+	                    placeholder: "URL Image",
+	                    name: "image",
+	                    value: user.image,
+	                    onInput: this.updateUser
+	                })
+	            ),
+	            React.createElement(
+	                "button",
+	                { "class": "forgot", onClick: this.eventSubmit },
+	                "Inscription"
+	            ),
+	            React.createElement(
+	                "button",
+	                { "class": "login", onClick: this.props.onClickRetour },
+	                "Retour"
+	            )
+	        );
+	    }
 	}
 
 	module.exports = UserJoin;
@@ -21356,226 +21356,288 @@
 	var UserForm = __webpack_require__(32);
 
 	class Home extends React.Component {
-	  constructor(props) {
-	    super(props);
+	    constructor(props) {
+	        super(props);
 
-	    if (sessionStorage.getItem('token') != undefined) {
-	      this.state = { user: sessionStorage.getItem('user'), token: sessionStorage.getItem('token') };
-	    } else {
-	      this.state = { user: {}, token: "" };
-	    }
-
-	    this.updateMessage = this.updateMessage.bind(this);
-	    this.nouveauMessage = this.nouveauMessage.bind(this);
-	    this.getlistMessages = this.getlistMessages.bind(this);
-	    this.renderMessage = this.renderMessage.bind(this);
-	    this.deleteMessage = this.deleteMessage.bind(this);
-	  }
-
-	  componentDidMount() {
-	    const ws = new WebSocket("wss://messy.now.sh");
-
-	    ws.onmessage = function (message) {
-	      var data = JSON.parse(message.data);
-	      switch (data.event) {
-	        case "message.created":
-	          var msg = this.state.listMessages;
-	          msg.push(data.message);
-	          this.setState({ listMessages: msg });
-	          break;
-
-	        case "message.deleted":
-	          function match(element) {
-	            return element.id !== data.id;
-	          }
-	          var msg = this.state.listMessages.filter(match);
-	          this.setState({ listMessages: msg });
-	          break;
-	      }
-	    }.bind(this);
-
-	    this.getlistMessages();
-	  }
-
-	  renderMessage(message) {
-
-	    if (message.user.id == this.state.user.id) {
-	      return React.createElement(
-	        "tr",
-	        null,
-	        React.createElement(
-	          "td",
-	          null,
-	          message.user.name
-	        ),
-	        React.createElement(
-	          "td",
-	          null,
-	          React.createElement("img", { src: message.user.image, width: "200px" })
-	        ),
-	        React.createElement(
-	          "td",
-	          null,
-	          message.message
-	        ),
-	        React.createElement(
-	          "td",
-	          null,
-	          React.createElement(
-	            "a",
-	            { href: "#", onClick: this.deleteMessage.bind(this, message.id) },
-	            "SUPPRIMER"
-	          )
-	        )
-	      );
-	    } else {
-	      return React.createElement(
-	        "tr",
-	        null,
-	        React.createElement(
-	          "td",
-	          null,
-	          message.user.name
-	        ),
-	        React.createElement(
-	          "td",
-	          null,
-	          React.createElement("img", { src: message.user.image, width: "200px" })
-	        ),
-	        React.createElement(
-	          "td",
-	          null,
-	          message.message
-	        )
-	      );
-	    }
-	  }
-
-	  getlistMessages() {
-	    var token = this.state.token;
-
-	    fetch('https://messy.now.sh/u/timeline', {
-	      method: 'GET',
-	      headers: {
-	        "Authorization": "Bearer:" + token
-	      }
-	    }).then(response => response.json()).then(response => {
-
-	      this.setState({ listMessages: response });
-	    });
-	  }
-
-	  updateMessage(event) {
-
-	    this.setState({
-	      message: event.target.value
-	    });
-	  }
-
-	  nouveauMessage() {
-	    var token = this.state.token;
-
-	    fetch('https://messy.now.sh/u/timeline', {
-	      method: 'POST',
-	      headers: {
-	        'Accept': 'application/json',
-	        'Content-Type': 'application/json',
-	        "Authorization": "Bearer:" + token
-	      },
-	      body: JSON.stringify({ message: this.state.message })
-	    }).then(response => response.json()).then(response => {});
-	  }
-
-	  deleteMessage(idMessage) {
-	    var token = this.state.token;
-
-	    var url = "https://messy.now.sh/u/timeline/" + idMessage;
-
-	    fetch(url, {
-	      method: 'DELETE',
-	      headers: {
-	        "Authorization": "Bearer:" + token
-	      }
-
-	    });
-	  }
-
-	  render() {
-
-	    //var message = this.state.message.map(renderMessage);
-	    if (this.state.listMessages) {
-	      this.state.listMessages.sort(function (a, b) {
-	        if (a.date >= b.date) {
-	          return -1;
+	        if (sessionStorage.getItem('token') != undefined) {
+	            this.state = { user: sessionStorage.getItem('user'), token: sessionStorage.getItem('token') };
 	        } else {
-	          return 1;
+	            this.state = { user: {}, token: "" };
 	        }
-	      });
 
-	      var listMessagesPrepared = this.state.listMessages.map(this.renderMessage);
-
-	      return React.createElement(
-	        "div",
-	        null,
-	        React.createElement(
-	          "button",
-	          { onClick: this.props.onClickRetour },
-	          "Retour"
-	        ),
-	        React.createElement(
-	          "div",
-	          null,
-	          React.createElement(
-	            "h1",
-	            null,
-	            "Message:"
-	          ),
-	          React.createElement(
-	            "label",
-	            null,
-	            "Message : "
-	          ),
-	          React.createElement("input", {
-	            name: "message",
-	            value: this.state.message,
-	            onInput: this.updateMessage
-	          }),
-	          React.createElement("br", null),
-	          React.createElement(
-	            "button",
-	            { onClick: this.nouveauMessage },
-	            "Envoyer"
-	          ),
-	          React.createElement(
-	            "button",
-	            { onClick: this.getlistMessages },
-	            "Actualiser"
-	          ),
-	          React.createElement("br", null)
-	        ),
-	        React.createElement(
-	          "div",
-	          null,
-	          React.createElement(
-	            "h1",
-	            null,
-	            "Timeline:"
-	          ),
-	          React.createElement(
-	            "table",
-	            null,
-	            listMessagesPrepared
-	          )
-	        )
-	      );
+	        this.updateMessage = this.updateMessage.bind(this);
+	        this.nouveauMessage = this.nouveauMessage.bind(this);
+	        this.getlistMessages = this.getlistMessages.bind(this);
+	        this.renderMessage = this.renderMessage.bind(this);
+	        this.deleteMessage = this.deleteMessage.bind(this);
 	    }
 
-	    return React.createElement(
-	      "div",
-	      { "class": "loader_container" },
-	      React.createElement("div", { "class": "loader" })
-	    );
-	  }
+	    componentDidMount() {
+	        const ws = new WebSocket("wss://messy.now.sh");
+
+	        ws.onmessage = function (message) {
+	            var data = JSON.parse(message.data);
+	            switch (data.event) {
+	                case "message.created":
+	                    var msg = this.state.listMessages;
+	                    msg.push(data.message);
+	                    this.setState({ listMessages: msg });
+	                    break;
+
+	                case "message.deleted":
+	                    function match(element) {
+	                        return element.id !== data.id;
+	                    }
+	                    var msg = this.state.listMessages.filter(match);
+	                    this.setState({ listMessages: msg });
+	                    break;
+	            }
+	        }.bind(this);
+
+	        this.getlistMessages();
+	    }
+
+	    renderMessage(message) {
+
+	        if (message.user.id == this.state.user.id) {
+	            return React.createElement(
+	                "li",
+	                null,
+	                React.createElement(
+	                    "a",
+	                    { "class": "thumbnail", href: "#" },
+	                    React.createElement("img", { src: message.user.image })
+	                ),
+	                React.createElement(
+	                    "div",
+	                    { "class": "content" },
+	                    React.createElement(
+	                        "h3",
+	                        null,
+	                        message.user.name
+	                    ),
+	                    React.createElement(
+	                        "span",
+	                        { "class": "preview" },
+	                        message.message
+	                    ),
+	                    React.createElement(
+	                        "span",
+	                        { "class": "meta" },
+	                        message.date,
+	                        "\xB7",
+	                        React.createElement(
+	                            "a",
+	                            { href: "#", onClick: this.deleteMessage.bind(this, message.id) },
+	                            "SUPPRIMER"
+	                        )
+	                    )
+	                )
+	            );
+	        } else {
+	            return React.createElement(
+	                "li",
+	                null,
+	                React.createElement(
+	                    "a",
+	                    { "class": "thumbnail", href: "#" },
+	                    React.createElement("img", { src: message.user.image })
+	                ),
+	                React.createElement(
+	                    "div",
+	                    { "class": "content" },
+	                    React.createElement(
+	                        "h3",
+	                        null,
+	                        message.user.name
+	                    ),
+	                    React.createElement(
+	                        "span",
+	                        { "class": "preview" },
+	                        message.message
+	                    ),
+	                    React.createElement(
+	                        "span",
+	                        { "class": "meta" },
+	                        message.date,
+	                        "\xB7",
+	                        React.createElement(
+	                            "a",
+	                            { href: "#", onClick: this.deleteMessage.bind(this, message.id) },
+	                            "SUPPRIMER"
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }
+
+	    getlistMessages() {
+	        var token = this.state.token;
+
+	        fetch('https://messy.now.sh/u/timeline', {
+	            method: 'GET',
+	            headers: {
+	                "Authorization": "Bearer:" + token
+	            }
+	        }).then(response => response.json()).then(response => {
+
+	            this.setState({ listMessages: response });
+	        });
+	    }
+
+	    updateMessage(event) {
+
+	        this.setState({
+	            message: event.target.value
+	        });
+	    }
+
+	    nouveauMessage() {
+	        var token = this.state.token;
+
+	        fetch('https://messy.now.sh/u/timeline', {
+	            method: 'POST',
+	            headers: {
+	                'Accept': 'application/json',
+	                'Content-Type': 'application/json',
+	                "Authorization": "Bearer:" + token
+	            },
+	            body: JSON.stringify({ message: this.state.message })
+	        }).then(response => response.json()).then(response => {});
+	    }
+
+	    deleteMessage(idMessage) {
+	        var token = this.state.token;
+
+	        var url = "https://messy.now.sh/u/timeline/" + idMessage;
+
+	        fetch(url, {
+	            method: 'DELETE',
+	            headers: {
+	                "Authorization": "Bearer:" + token
+	            }
+
+	        });
+	    }
+
+	    render() {
+
+	        if (this.state.listMessages) {
+	            this.state.listMessages.sort(function (a, b) {
+	                if (a.date >= b.date) {
+	                    return -1;
+	                } else {
+	                    return 1;
+	                }
+	            });
+
+	            var listMessagesPrepared = this.state.listMessages.map(this.renderMessage);
+
+	            return React.createElement(
+	                "div",
+	                { "class": "chat" },
+	                React.createElement(
+	                    "header",
+	                    null,
+	                    React.createElement(
+	                        "h2",
+	                        { "class": "title" },
+	                        "Nouveau :"
+	                    ),
+	                    React.createElement(
+	                        "ul",
+	                        { "class": "tools" },
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement("a", { "class": "fa fa-gear", href: "#" })
+	                        ),
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement("a", { "class": "fa fa-search", href: "#" })
+	                        )
+	                    )
+	                ),
+	                React.createElement(
+	                    "div",
+	                    { "class": "body" },
+	                    React.createElement("br", null),
+	                    React.createElement(
+	                        "label",
+	                        null,
+	                        "Message : "
+	                    ),
+	                    React.createElement("input", {
+	                        "class": "input_message",
+	                        name: "message",
+	                        value: this.state.message,
+	                        onInput: this.updateMessage
+	                    }),
+	                    React.createElement(
+	                        "button",
+	                        { "class": "forgot", onClick: this.nouveauMessage },
+	                        "Envoyer"
+	                    ),
+	                    React.createElement(
+	                        "button",
+	                        { "class": "forgot", onClick: this.getlistMessages },
+	                        "Actualiser"
+	                    ),
+	                    React.createElement("br", null)
+	                ),
+	                React.createElement("br", null),
+	                React.createElement(
+	                    "header",
+	                    null,
+	                    React.createElement(
+	                        "h2",
+	                        { "class": "title" },
+	                        "Liste Messages :"
+	                    ),
+	                    React.createElement(
+	                        "ul",
+	                        { "class": "tools" },
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement("a", { "class": "fa fa-gear", href: "#" })
+	                        ),
+	                        React.createElement(
+	                            "li",
+	                            null,
+	                            React.createElement("a", { "class": "fa fa-search", href: "#" })
+	                        )
+	                    )
+	                ),
+	                React.createElement(
+	                    "div",
+	                    { "class": "body" },
+	                    React.createElement(
+	                        "ul",
+	                        null,
+	                        listMessagesPrepared
+	                    )
+	                ),
+	                React.createElement(
+	                    "footer",
+	                    null,
+	                    React.createElement(
+	                        "a",
+	                        { href: "#", onClick: this.props.onClickRetour },
+	                        "Deconnexion"
+	                    )
+	                )
+	            );
+	        }
+
+	        return React.createElement(
+	            "div",
+	            { "class": "loader_container" },
+	            React.createElement("div", { "class": "loader" })
+	        );
+	    }
 	}
 
 	module.exports = Home;
@@ -21590,86 +21652,86 @@
 
 	class UserConnect extends React.Component {
 
-	  constructor(props) {
-	    super(props);
+	    constructor(props) {
+	        super(props);
 
-	    this.state = { user: "" };
-	    this.updateUser = this.updateUser.bind(this);
-	    this.eventSubmit = this.eventSubmit.bind(this);
-	  }
+	        this.state = { user: "" };
+	        this.updateUser = this.updateUser.bind(this);
+	        this.eventSubmit = this.eventSubmit.bind(this);
+	    }
 
-	  getInitialState() {
-	    return { user: { name: "", password: "", image: "" } };
-	  }
+	    getInitialState() {
+	        return { user: { name: "", password: "", image: "" } };
+	    }
 
-	  updateUser(event) {
-	    var updatedU = Object.assign({}, this.state.user, { [event.target.name]: event.target.value });
-	    this.setState({
-	      user: updatedU
-	    });
-	  }
+	    updateUser(event) {
+	        var updatedU = Object.assign({}, this.state.user, { [event.target.name]: event.target.value });
+	        this.setState({
+	            user: updatedU
+	        });
+	    }
 
-	  eventSubmit(event) {
+	    eventSubmit(event) {
 
-	    var user = this.state.user;
+	        var user = this.state.user;
 
-	    //NE RAFRAICHIS PLUS LA PAGE
-	    event.preventDefault();
+	        //NE RAFRAICHIS PLUS LA PAGE
+	        event.preventDefault();
 
-	    fetch('https://messy.now.sh/authenticate', {
-	      method: 'POST',
-	      headers: {
-	        'Accept': 'application/json',
-	        'Content-Type': 'application/json'
-	      },
-	      body: JSON.stringify(user)
-	    }).then(response => response.json()).then(function (response) {
-	      //alert(JSON.stringify(response));
-	      console.log(response);
-	    });
-	  }
+	        fetch('https://messy.now.sh/authenticate', {
+	            method: 'POST',
+	            headers: {
+	                'Accept': 'application/json',
+	                'Content-Type': 'application/json'
+	            },
+	            body: JSON.stringify(user)
+	        }).then(response => response.json()).then(function (response) {
+	            //alert(JSON.stringify(response));
+	            console.log(response);
+	        });
+	    }
 
-	  render() {
+	    render() {
 
-	    var user = this.state.user;
+	        var user = this.state.user;
 
-	    return React.createElement(
-	      "form",
-	      { onSubmit: this.eventSubmit },
-	      "this.state = ",
-	      JSON.stringify(user),
-	      " ",
-	      React.createElement("br", null),
-	      React.createElement(
-	        "label",
-	        null,
-	        "Name : "
-	      ),
-	      React.createElement("input", {
-	        name: "name",
-	        value: user.name,
-	        onInput: this.updateUser
-	      }),
-	      React.createElement("br", null),
-	      React.createElement(
-	        "label",
-	        null,
-	        "Password : "
-	      ),
-	      React.createElement("input", {
-	        name: "password",
-	        value: user.password,
-	        onInput: this.updateUser
-	      }),
-	      React.createElement("br", null),
-	      React.createElement("input", { type: "submit", value: "Submit" }),
-	      React.createElement(
-	        "button",
-	        { onClick: this.props.onClickRetour },
-	        "Retour"
-	      )
-	    );
-	  }
+	        return React.createElement(
+	            "form",
+	            { onSubmit: this.eventSubmit },
+	            "this.state = ",
+	            JSON.stringify(user),
+	            " ",
+	            React.createElement("br", null),
+	            React.createElement(
+	                "label",
+	                null,
+	                "Name : "
+	            ),
+	            React.createElement("input", {
+	                name: "name",
+	                value: user.name,
+	                onInput: this.updateUser
+	            }),
+	            React.createElement("br", null),
+	            React.createElement(
+	                "label",
+	                null,
+	                "Password : "
+	            ),
+	            React.createElement("input", {
+	                name: "password",
+	                value: user.password,
+	                onInput: this.updateUser
+	            }),
+	            React.createElement("br", null),
+	            React.createElement("input", { type: "submit", value: "Submit" }),
+	            React.createElement(
+	                "button",
+	                { onClick: this.props.onClickRetour },
+	                "Retour"
+	            )
+	        );
+	    }
 	}
 
 	module.exports = UserConnect;
